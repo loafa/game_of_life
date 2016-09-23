@@ -2,6 +2,13 @@ var Board = function (width, height) {
 	var that = Object.create(Board.prototype);
 	var cells = {};
 
+	if (width == undefined) {
+		width = 20;
+	}
+	if (height == undefined) {
+		height = 20;
+	}
+
 	that.getWidth = function() { return width; };
 	that.getHeight = function() { return height; };
 	that.initializeEmpty = function() {
@@ -65,7 +72,7 @@ var Board = function (width, height) {
 		}
 		return liveCount;
 	};
-	
+
 	that.initializeEmpty(); // always default to empty board
 	Object.freeze(that);
 	return that;

@@ -2,21 +2,6 @@
     mocha.setup("bdd");
     var assert = chai.assert;
 
-    describe("Coord", function() {
-        describe("getX", function() {
-            it("should return the x coordinate, 0", function(){
-                var coord = Coord(0, 4);
-                assert.equal(0, coord.getX());
-            })
-        });
-        describe("getY", function() {
-            it("should return the y coordinate, 42", function() {
-                var coord = Coord(32, 42);
-                assert.equal(42, coord.getY());
-            })
-        });
-    });
-
     describe("Cell", function() {
         describe("getX", function() {
             it("should return the x coordinate, 3", function(){

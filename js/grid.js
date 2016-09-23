@@ -1,5 +1,19 @@
 var Grid = function(square_dim, squares_per_row, canvas) {
 	var that = Object.create(Grid.prototype);
+
+	if (square_dim == undefined) {
+		square_dim = 20;
+	}
+	if (squares_per_row == undefined) {
+		squares_per_row = 20;
+	}
+	if (canvas == undefined) {
+		if (document.getElementById("grid") == undefined){
+			$('<canvas>').attr({ id: "grid" }).appendTo('body');
+		}
+		canvas = document.getElementById("grid");
+	}
+
 	var pixel_dim = square_dim * squares_per_row;
 	canvas.setAttribute("width", pixel_dim);
 	canvas.setAttribute("height", pixel_dim);

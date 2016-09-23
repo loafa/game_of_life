@@ -1,7 +1,24 @@
+// interfaces between game logic and grid
 var Game = function(grid, board) {
 	var that = Object.create(Game.prototype);
 	var interval = undefined;
 	var running = false;
+	if (grid == undefined) {
+		grid = Grid();
+	}
+	if (board == undefined) {
+		board = Board();
+	}
+
+	that.randomInit = function() {
+		board.initRandom(.25);
+		that.populateBoard();
+	}
+
+	that.emptyInit = function() {
+		board.initializeEmpty();
+		that.populateBoard();
+	}
 
 	that.update = function() {
 		board.updateState();
@@ -29,6 +46,18 @@ var Game = function(grid, board) {
 	};
 	
 	that.isRunning = function() { return running; };
+
+	that.toggleCell = function(x, y) {
+		x = grid.convertToCoord(x, y)["x"];
+		y = grid.convertToCoord(x, y)["y"];
+		if (board.getState(x, y)) {
+			board.setState(x, y, false);
+			grid.clearSquare(x, y);
+		} else {
+			board.setState(x, y, true);
+			grid.fillSquare(x, y);
+		}
+	};
 
 	that.populateBoard = function() {
 		grid.resetGrid();

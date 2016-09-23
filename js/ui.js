@@ -1,5 +1,10 @@
-var UI = function(grid, board, game) {
+// interfaces between the UI and the game grid
+var UI = function(game) {
 	var that = Object.create(UI.prototype);
+	if (game == undefined) {
+		game = Game();
+	};
+
 	that.startButtonEvent = function() {
 		// game.toggleState();
 		if (!game.isRunning()){
@@ -11,14 +16,12 @@ var UI = function(grid, board, game) {
 
 	that.randomInit = function() {
 		that.stop();
-		board.initRandom(.25);
-		game.populateBoard();
+		game.randomInit();
 	}
 
 	that.emptyInit = function() {
 		that.stop();
-		board.initializeEmpty();
-		game.populateBoard();
+		game.emptyInit();
 	}
 
 	that.stop = function() {
@@ -31,23 +34,12 @@ var UI = function(grid, board, game) {
 		$("#toggle").text("Stop");
 	}
 
-	that.toggleCell = function(x, y) {
-		x = grid.convertToCoord(x, y)["x"];
-		y = grid.convertToCoord(x, y)["y"];
-		if (board.getState(x, y)) {
-			board.setState(x, y, false);
-			grid.clearSquare(x, y);
-		} else {
-			board.setState(x, y, true);
-			grid.fillSquare(x, y);
-		}
-	};
 
 	$("#toggle").click(that.startButtonEvent);
 	$("#random").click(that.randomInit);
 	$("#empty").click(that.emptyInit);
 	$("#grid").click(function(evt) { 
-		that.toggleCell(evt.offsetX, evt.offsetY); 
+		game.toggleCell(evt.offsetX, evt.offsetY); 
 	});
 	Object.freeze(that);
 	return that;
