@@ -1,26 +1,35 @@
 var Game = function(grid, board) {
 	var that = Object.create(Game.prototype);
-	var running = undefined;
-	board.initializeEmpty();
+	var interval = undefined;
+	var running = false;
 
 	that.update = function() {
 		board.updateState();
         that.populateBoard();
 	};
 
-	that.start = function(interval) {
+	that.start = function() {
 		that.populateBoard();
-		running = setInterval(that.update, 1000);
-	};
+		if (!running) {
+			interval = window.setInterval(that.update, 1000);
+			running = true;
+		}
+	}
 
 	that.stop = function() {
-		clearInterval(running);
-	};
+		that.populateBoard();
+		if (running) {
+			clearInterval(interval);
+			running = false;
+		}
+	}
 
 	that.reset = function(startState) {
 		board.init(startState ? startState : []);
 	};
 	
+	that.isRunning = function() { return running; };
+
 	that.populateBoard = function() {
 		grid.resetGrid();
         for (var i = 0; i < board.getWidth(); i++){

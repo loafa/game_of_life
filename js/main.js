@@ -1,16 +1,9 @@
 (function() {
     document.addEventListener('DOMContentLoaded', function () {
-
-        var grid = Grid(20, 3, document.getElementById("test"));
-        var board = Board(3, 3);
+        var num_squares = 20;
+        var grid = Grid(20, num_squares, document.getElementById("grid"));
+        var board = Board(num_squares, num_squares);
         var game = Game(grid, board);
-        board.setState(1, 0, true);
-        board.setState(2, 0, true);
-        board.setState(1, 1, true);
-        board.setState(2, 1, true);
-        board.setState(2, 2, true);
-
-        $("#toggleOn").click(game.start);
-        
+        var ui = UI(grid, board, game);
     });
 })()

@@ -11,8 +11,15 @@ var Board = function (width, height) {
 				cells[[x,y]] = Cell(x, y, false); 
 			}
 		}
-	}
+	};
 	
+	that.initRandom = function(prob) {
+		if (prob == undefined) { prob = .25; };
+
+		Object.keys(cells).forEach(function(cell) {
+			cells[cell].setAlive(Math.random() < prob);
+		});
+	};
 
 	// update the state of Cell at (x, y) based on game rules
 	that.updateState = function() {
@@ -56,10 +63,10 @@ var Board = function (width, height) {
 				}
 			}
 		}
-		// console.log(x + " " + y + " " + liveCount + "\n");
 		return liveCount;
 	};
-
+	
+	that.initializeEmpty(); // always default to empty board
 	Object.freeze(that);
 	return that;
 }
