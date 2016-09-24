@@ -1,9 +1,10 @@
 // represents the game board (this is the logic side, ie. the model)
 // our board is "infinite" in that coordinates wrap around
-// when talking about "board coords" we refer to the number of squares from the top left (zero-indexed)
-//		this is as opposed to pixel coordinates, for example
+// when talking about "board coords" we refer to the number of cells from the top left (zero-indexed)
+//		this is as opposed to pixel coordinates, for example. Always an integer pair.
 // the board defaults to 30 x 30 if width/ height are unspecified
-// must be given positive values for width/ height
+// @param width the width of the game board (in #cells per row). must be int > 0
+// @param height the height of the game board (in #cells per column). must be int > 0
 var Board = function (width, height) {
 	var that = Object.create(Board.prototype);
 
@@ -19,8 +20,10 @@ var Board = function (width, height) {
 		height = DEFAULT_DIMENSION;
 	}
 
-	// getters for the width and height of the game board (board coords)
+	// @return width of the board in cells
 	that.getWidth = function() { return width; };
+
+	// @return height of the board in cells
 	that.getHeight = function() { return height; };
 
 	// initialize dead board of size width x height
@@ -33,7 +36,7 @@ var Board = function (width, height) {
 	};
 	
 	// initialize a board of size width x height with randomly placed live cells
-	// prob: the probability of a cell being live
+	// @param prob the probability of a cell being live (float in range [0, 1])
 	that.initRandom = function(prob) {
 		// default probability of being a live cell is 25%
 		if (prob == undefined) { prob = .25; };
@@ -45,7 +48,7 @@ var Board = function (width, height) {
 
 	// initialize a board of size width x height from a list containing the coords
 	//		of live cells (eg. [[0, 1], [3, 4]] has live cells at only (0, 1) and (3, 4) in board coords)
-	// livelist: the list of coords (described above)
+	// @param livelist the list of coords (format described above)
 	that.initFromList = function(liveList) {
 		liveList.forEach(function(coord) {
 			// make sure that the coordinates are wrapped to be within our grid space
@@ -54,7 +57,7 @@ var Board = function (width, height) {
 		});
 	};
 
-	// update the state of Cell at (x, y) based on game rules
+	// update the state of all cells based on game rules
 	that.updateState = function() {
 		var newCellState = {};
 		for (var x = 0; x < width; x++){
@@ -74,6 +77,9 @@ var Board = function (width, height) {
 	};
 
 	// set the state of the Cell at (x, y) to alive or dead
+	// @param x boord coord x of the cell (int)
+	// @param y board coord y of the cell (int)
+	// @param isAlive true iff setting the cell to be alive (bool)
 	that.setState = function(x, y, isAlive) {
 		cells[[x,y]].setAlive(isAlive);
 	};
@@ -85,7 +91,9 @@ var Board = function (width, height) {
 
 	// returns the number of neighbors of the Cell at (x, y) that are alive
 	// (non-inclusive of the cell at (x, y))
-	// requires that x and y are in legal range of the grid
+	// @param x the x board coord of cell of interest (int in range [0, width))
+	// @param y the y board coord of cell of interest (int in range [0, height))
+	// @return the number of live neighbors of the cell at (x, y)
 	that.getLiveNeighbors = function(x, y) {
 		var liveCount = 0;
 		// we don't want to double-count a cell
@@ -104,7 +112,11 @@ var Board = function (width, height) {
 		}
 		return liveCount;
 	};
+
 	// modulo function that can deal with negative numbers
+	// @param x integer we want to take the modulo of
+	// @param y the number we're mod-ing by (int)
+	// @return the modded value of x (in range [0, y))
 	var mod = function(x, y) {
 		while (x < 0) {
 			x += y;

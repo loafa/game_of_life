@@ -1,4 +1,6 @@
 // interfaces between game logic and grid (visual canvas object)
+// @param grid the graphic grid object for the game (see Grid.js)
+// @param board the game board (game logic model) (see Board.js)
 var Game = function(grid, board) {
 	var that = Object.create(Game.prototype);
 
@@ -23,7 +25,7 @@ var Game = function(grid, board) {
 	};
 
 	// initializes a board from the passed list of live cells "list"
-	// list must have the format [[x, y], [w, u], ...] where [x, y] and [w,u] are board coordinates
+	// @param list must have the format [[x, y], [w, u], ...] where [x, y] and [w,u] are board coordinates
 	that.listInit = function(list) {
 		board.initEmpty();
 		board.initFromList(list);
@@ -61,11 +63,12 @@ var Game = function(grid, board) {
 		}
 	};
 	
-	// returns true iff the game (and animation) are running
+	// @return true iff the game (and animation) are running
 	that.isRunning = function() { return running; };
 
 	// if the cell at (x, y) is alive, it's turned dead and vice versa
-	// NOTE that this function expects pixel coordinates
+	// @param x the x coordinate in pixels from the top left corner of grid
+	// @param y the y coordinate in pixels from the top left corner of grid
 	that.toggleCell = function(x, y) {
 		x = grid.convertToCoord(x, y)["x"];
 		y = grid.convertToCoord(x, y)["y"];

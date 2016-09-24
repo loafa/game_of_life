@@ -35,17 +35,23 @@ var Grid = function(square_dim, board_dim, canvas) {
 	ctx.lineWidth = 1.25;
 
 	// fills the square at board coords (x, y)
+	// @param x the board coord x. int in range [0, board_dim)
+	// @param y the board coord y. int in range [0, board_dim)
 	that.fillSquare = function(x, y) {
 		ctx.fillRect(x*square_dim, y*square_dim, square_dim, square_dim);
 	};
 
 	// clears the square at board coords(x, y)
+	// @param x the board coord x. int in range [0, board_dim)
+	// @param y the board coord y. int in range [0, board_dim)
 	that.clearSquare = function(x, y) {
 		ctx.clearRect(x*square_dim, y*square_dim, square_dim, square_dim);
 		that.drawGridLines(); // it's easier to redraw the grid lines to ensure a clean grid
 	};
 
 	// converts the passed (x, y) in pixels from the top left corner of the canvas to board coords
+	// @param x the pixel coords x from top left corner of grid. int in range [0, pixel_dim)
+	// @param y the pixel coords y from top left corner of grid. int in range [0, pixel_dim)
 	that.convertToCoord = function(x, y) {
 		return {"x" : Math.floor(x/ square_dim), "y": Math.floor(y/square_dim)};
 	};
@@ -71,7 +77,7 @@ var Grid = function(square_dim, board_dim, canvas) {
 		ctx.stroke();
 	}
 
-	// returns the size of the grid in pixels
+	// @return the size of the grid in pixels
 	that.dimension = function() { return pixel_dim; };
 
 	// we prep the grid for use by drawing the lines before returning the object
