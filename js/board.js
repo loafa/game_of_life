@@ -2,18 +2,21 @@
 // our board is "infinite" in that coordinates wrap around
 // when talking about "board coords" we refer to the number of squares from the top left (zero-indexed)
 //		this is as opposed to pixel coordinates, for example
+// the board defaults to 30 x 30 if width/ height are unspecified
+// must be given positive values for width/ height
 var Board = function (width, height) {
 	var that = Object.create(Board.prototype);
 
 	// maps [x, y] (location in square coordinates) to a Cell at that location
 	var cells = {};
+	var DEFAULT_DIMENSION = 30;
 
 	// default to a 30 x 30 board
 	if (width === undefined) {
-		width = 30;
+		width = DEFAULT_DIMENSION;
 	}
 	if (height === undefined) {
-		height = 30;
+		height = DEFAULT_DIMENSION;
 	}
 
 	// getters for the width and height of the game board (board coords)
@@ -82,12 +85,13 @@ var Board = function (width, height) {
 
 	// returns the number of neighbors of the Cell at (x, y) that are alive
 	// (non-inclusive of the cell at (x, y))
+	// requires that x and y are in legal range of the grid
 	that.getLiveNeighbors = function(x, y) {
 		var liveCount = 0;
-		var counted = {};
-		// var liveCells = Object.keys(cells).filter(function(cellCoord) {
-		// 	return that.isNeighbor(x, y, cellCoord[0], cellCoord[1]) && cells[cellCoord];
-		// });
+		// we don't want to double-count a cell
+		// this is possible with wraparound on a small board
+		var counted = {}; 
+
 		for (var i = x-1; i < x+2; i++) {
 			for (var j = y-1; j < y+2; j++) {
 				var mod_i = mod(i, width);
@@ -100,23 +104,16 @@ var Board = function (width, height) {
 		}
 		return liveCount;
 	};
-
-	// return true iff (i, j) is a neighbor of (x, y)
-	// that.isNeighbor = function (x, y, i, j) { 
-	// 	i = mod(i, width);
-	// 	j = mod(j, height);
-	// 	return i >= x-1 && i <= x+1 && j >= y-1 && j <= y+1 && !(i == x || j == y);
-	// };
+	// modulo function that can deal with negative numbers
+	var mod = function(x, y) {
+		while (x < 0) {
+			x += y;
+		} 
+		return x % y; 
+	};
 
 	that.initEmpty(); // always default to empty board
 	Object.freeze(that);
 	return that;
 }
 
-// modulo function that can deal with negative numbers
-mod = function(x, y) {
-	while (x < 0) {
-		x += y;
-	} 
-	return x % y; 
-};
