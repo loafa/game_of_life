@@ -1,12 +1,13 @@
 // interfaces between the UI and the game grid
 var UI = function(game) {
 	var that = Object.create(UI.prototype);
+	// default: default game
 	if (game == undefined) {
 		game = Game();
 	};
 
-	that.startButtonEvent = function() {
-		// game.toggleState();
+	// toggles the game state (running -> paused/ stopped, paused -> running)
+	that.toggleGameState = function() {
 		if (!game.isRunning()){
 			that.start();
 		} else {
@@ -14,6 +15,8 @@ var UI = function(game) {
 		}
 	};
 
+	// initialize game state with a pulsar
+	// https://en.wikipedia.org/wiki/File:Game_of_life_pulsar.gif
 	that.pulsarInit = function() {
 		that.stop();
 		game.listInit([[8, 11], [8, 17], [9, 11], [9, 17], [10, 11], [10, 12], [10, 16], [10, 17], 
@@ -25,6 +28,8 @@ var UI = function(game) {
 			[21, 17], [22, 11], [22, 17]]);
 	}
 
+	// initialize game state with a pentadecathlon
+	// https://en.wikipedia.org/wiki/File:I-Column.gif
 	that.pentaInit = function() {
 		that.stop();
 		game.listInit([[13, 12], [13, 13], [13, 14], [13, 15], [13, 16], [13, 17], [14, 11], 
@@ -32,28 +37,32 @@ var UI = function(game) {
 			[17, 15], [17, 16], [17, 17]]);
 	}
 
+	// initialize random game state (any cell is live with 25% probability)
 	that.randomInit = function() {
 		that.stop();
 		game.randomInit();
 	}
 
+	// initialize an entirely dead game state
 	that.emptyInit = function() {
 		that.stop();
 		game.emptyInit();
 	}
 
+	// stop the game
 	that.stop = function() {
 		game.stop();
 		$("#toggle").text("Start");
 	}
 
+	// start the game
 	that.start = function() {
 		game.start();
 		$("#toggle").text("Stop");
 	}
 
 
-	$("#toggle").click(that.startButtonEvent);
+	$("#toggle").click(that.toggleGameState);
 	$("#random").click(that.randomInit);
 	$("#empty").click(that.emptyInit);
 	$("#grid").click(function(evt) {
@@ -64,7 +73,7 @@ var UI = function(game) {
 	});
 	$("#pulsar").click(that.pulsarInit);
 	$("#pentadecathlon").click(that.pentaInit);
-	
+
 	Object.freeze(that);
 	return that;
 };
