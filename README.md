@@ -12,12 +12,12 @@ The code is split up into several distinct modules, each with its own individual
 The Board depends on Cells (as a game board is considered to be composed only of cells). The Grid does not have dependencies on any other object, but does require an element in the document called "grid". The Game object, as the "controller" requires access to the Board and Grid objects in order to properly interface between the two. Finally, the UI sitting on top only needs to see the Game in order to communicate button presses. 
 
 ## 3. Functionals
-####Board
+####`Board`
 Within `Board`, operations such as initializations and updates needed to happen for every Cell in the board. As such, I used a forEach on the cells (abstracting away the indexing within the grid structure).
 Furthermore, in `getLiveNeighbors`, I filtered the list of live cells (`liveCellCoords`) to count the number of live cells which were neighbors of the passed cell. 
 There was one `for` loop I found necessary to use, namely to populate the `cells` object initially with all the coordinates of the grid. With this representation, relying on indices was necessary.
 
-####Game
+####`Game`
 In `Game.update`, I used a `forEach` on the list of live cells (`Board.getLiveCells`) to fill in the appropriate squares on the grid without having to query each cell to determine if it was alive or not.
 
 ## 4. Design
