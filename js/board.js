@@ -8,10 +8,10 @@
 var Board = function (width, height) {
 	var that = Object.create(Board.prototype);
 
-	// maps [x, y] (location in square coordinates) to a Cell at that location
+	// maps "x,y" (location in board coordinates) to a Cell at that location
 	var cells = {};
 	var DEFAULT_DIMENSION = 30;
-
+	var liveCellCoords = [];
 	// default to a 30 x 30 board
 	if (width === undefined) {
 		width = DEFAULT_DIMENSION;
@@ -28,21 +28,22 @@ var Board = function (width, height) {
 
 	// initialize dead board of size width x height
 	that.initEmpty = function() {
-		for (var x = 0; x < width; x++){
-			for (var y = 0; y < height; y++){
-				cells[[x,y]] = Cell(false); 
-			}
-		}
+		liveCellCoords = [];
+		Object.keys(cells).forEach(function(cell) {
+			cells[cell].setAlive(false);
+		});
 	};
 	
 	// initialize a board of size width x height with randomly placed live cells
 	// @param prob the probability of a cell being live (float in range [0, 1])
 	that.initRandom = function(prob) {
+		liveCellCoords = [];
 		// default probability of being a live cell is 25%
 		if (prob == undefined) { prob = .25; };
 
 		Object.keys(cells).forEach(function(cell) {
 			cells[cell].setAlive(Math.random() < prob);
+			if (cells[cell].isAlive()) { liveCellCoords.push(cell); }
 		});
 	};
 
@@ -50,29 +51,37 @@ var Board = function (width, height) {
 	//		of live cells (eg. [[0, 1], [3, 4]] has live cells at only (0, 1) and (3, 4) in board coords)
 	// @param livelist the list of coords (format described above)
 	that.initFromList = function(liveList) {
+		liveCellCoords = [];
 		liveList.forEach(function(coord) {
 			// make sure that the coordinates are wrapped to be within our grid space
 			coord = [coord[0] % width, coord[1] % height];
 			cells[coord] = Cell(true);
+			liveCellCoords.push(coord[0] + "," + coord[1]);
 		});
 	};
 
 	// update the state of all cells based on game rules
 	that.updateState = function() {
 		var newCellState = {};
-		for (var x = 0; x < width; x++){
-			for (var y = 0; y < height; y++){
-				var liveNeighbors = that.getLiveNeighbors(x, y);
 
-				if (liveNeighbors == 3) { // at exactly 3, cell either stays alive or is rejuvenated
-					newCellState[[x,y]] = Cell(true);
-				} else if (liveNeighbors == 2) { // at exactly 2, cell maintains state
-					newCellState[[x,y]] = Cell(cells[[x,y]].isAlive());
-				} else { // otherwise, perishes from over/underpopulation
-					newCellState[[x,y]] = Cell(false);
-				}
+		Object.keys(cells).forEach(function(cell){
+			var x = parseCoords(cell).x;
+			var y = parseCoords(cell).y;
+
+			var liveNeighbors = that.getLiveNeighbors(x, y);
+			if (liveNeighbors == 3) { // at exactly 3, cell either stays alive or is rejuvenated
+				newCellState[x + "," + y] = Cell(true);
+			} else if (liveNeighbors == 2) { // at exactly 2, cell maintains state
+				newCellState[x + "," + y] = Cell(cells[x + "," + y].isAlive());
+			} else { // otherwise, perishes from over/underpopulation
+				newCellState[x + "," + y] = Cell(false);
 			}
-		}
+		});
+
+		liveCellCoords = Object.keys(newCellState).filter(function(cell){
+			return newCellState[cell].isAlive();
+		});
+
 		cells = newCellState;
 	};
 
@@ -81,12 +90,13 @@ var Board = function (width, height) {
 	// @param y board coord y of the cell (int)
 	// @param isAlive true iff setting the cell to be alive (bool)
 	that.setState = function(x, y, isAlive) {
-		cells[[x,y]].setAlive(isAlive);
+		cells[x + "," + y].setAlive(isAlive);
+		if (isAlive) { liveCellCoords.push(x + "," + y); }
 	};
 
 	// returns true iff the Cell at (x, y) is alive
 	that.isAlive = function(x, y) {
-		return cells[[x,y]].isAlive();
+		return cells[x + "," + y].isAlive();
 	};
 
 	// returns the number of neighbors of the Cell at (x, y) that are alive
@@ -100,18 +110,26 @@ var Board = function (width, height) {
 		// this is possible with wraparound on a small board
 		var counted = {}; 
 
-		for (var i = x-1; i < x+2; i++) {
-			for (var j = y-1; j < y+2; j++) {
-				var mod_i = mod(i, width);
-				var mod_j = mod(j, height);
-				if (cells[[mod_i,mod_j]].isAlive() && !(mod_i == x && mod_j == y) && counted[[mod_i,mod_j]] == undefined){
-					liveCount++;
-					counted[[mod_i,mod_j]] = 1;
-				}
-			}
+		//@return true iff coord is a neighbor of (x, y)
+		var isNeighbor = function(coord) {
+			var i = parseCoords(coord).x;
+			var j = parseCoords(coord).y;
+			if (x == i && y == j) { return false; }; // a cell is not its own neighbor by definition
+
+			// manage edge cases for wraparound
+			// we want the distance between these coordinates to be 1
+			if ((x == 0 && i == width-1) || (i == 0 && x == width-1)) { i = x + 1; }
+			if ((y == 0 && j == height-1) || (j == 0 && y == height-1)) { j = y + 1; }
+
+			// need to be within 1 square from each other
+			return Math.abs(x - i) <= 1 && Math.abs(y - j) <= 1;
 		}
-		return liveCount;
+		
+		return liveCellCoords.filter(isNeighbor).length;
 	};
+
+	//@return list of live cells
+	that.getLiveCells = function () { return liveCellCoords; };
 
 	// modulo function that can deal with negative numbers
 	// @param x integer we want to take the modulo of
@@ -124,8 +142,21 @@ var Board = function (width, height) {
 		return x % y; 
 	};
 
-	that.initEmpty(); // always default to empty board
+	// initialize cells
+	for (var x = 0; x < width; x++){
+		for (var y = 0; y < height; y++){
+			cells[x + "," + y] = Cell(false); 
+		}
+	}
+
 	Object.freeze(that);
 	return that;
 }
 
+//@param coord string of format x + "," + y where x and y are integers
+//@return object mapping x and y to corresponding integer values
+parseCoords = function(coord) {
+	var x = parseInt(coord.split(",")[0]);
+	var y = parseInt(coord.split(",")[1]);
+	return {"x" : x, "y" : y};
+}

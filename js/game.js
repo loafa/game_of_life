@@ -3,6 +3,7 @@
 // @param board the game board (game logic model) (see Board.js)
 var Game = function(grid, board) {
 	var that = Object.create(Game.prototype);
+	var animation_interval = 120; //ms
 
 	var interval = undefined; // will keep track of the update interval
 	var running = false; // true iff the game animation is running
@@ -48,7 +49,6 @@ var Game = function(grid, board) {
 	that.start = function() {
 		that.populateBoard();
 		if (!running) {
-			var animation_interval = 120; //ms
 			interval = window.setInterval(that.update, animation_interval);
 			running = true;
 		}
@@ -84,13 +84,9 @@ var Game = function(grid, board) {
 	// populates the graphic grid with live cell squares
 	that.populateBoard = function() {
 		grid.resetGrid(); // clean the grid then add everything
-        for (var i = 0; i < board.getWidth(); i++){
-            for (var j = 0; j < board.getHeight(); j++){
-                if (board.isAlive(i, j)){
-                    grid.fillSquare(i, j);
-                }
-            }
-        }
+		board.getLiveCells().forEach(function(coord) {
+			grid.fillSquare(parseCoords(coord).x, parseCoords(coord).y);
+		});
 	};
 
 	Object.freeze(that);
