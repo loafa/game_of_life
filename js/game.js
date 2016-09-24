@@ -85,7 +85,7 @@ var Game = function(grid, board) {
 	that.populateBoard = function() {
 		grid.resetGrid(); // clean the grid then add everything
 		board.getLiveCells().forEach(function(coord) {
-			grid.fillSquare(parseCoords(coord).x, parseCoords(coord).y);
+			grid.fillSquare(board.parseCoords(coord).x, board.parseCoords(coord).y);
 		});
 	};
 

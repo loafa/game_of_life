@@ -65,8 +65,8 @@ var Board = function (width, height) {
 		var newCellState = {};
 
 		Object.keys(cells).forEach(function(cell){
-			var x = parseCoords(cell).x;
-			var y = parseCoords(cell).y;
+			var x = that.parseCoords(cell).x;
+			var y = that.parseCoords(cell).y;
 
 			var liveNeighbors = that.getLiveNeighbors(x, y);
 			if (liveNeighbors == 3) { // at exactly 3, cell either stays alive or is rejuvenated
@@ -106,14 +106,11 @@ var Board = function (width, height) {
 	// @return the number of live neighbors of the cell at (x, y)
 	that.getLiveNeighbors = function(x, y) {
 		var liveCount = 0;
-		// we don't want to double-count a cell
-		// this is possible with wraparound on a small board
-		var counted = {}; 
 
 		//@return true iff coord is a neighbor of (x, y)
 		var isNeighbor = function(coord) {
-			var i = parseCoords(coord).x;
-			var j = parseCoords(coord).y;
+			var i = that.parseCoords(coord).x;
+			var j = that.parseCoords(coord).y;
 			if (x == i && y == j) { return false; }; // a cell is not its own neighbor by definition
 
 			// manage edge cases for wraparound
@@ -124,21 +121,28 @@ var Board = function (width, height) {
 			// need to be within 1 square from each other
 			return Math.abs(x - i) <= 1 && Math.abs(y - j) <= 1;
 		}
-		
+
 		return liveCellCoords.filter(isNeighbor).length;
 	};
 
 	//@return list of live cells
 	that.getLiveCells = function () { return liveCellCoords; };
 
+
+	//@param coord string of format x + "," + y where x and y are integers
+	//@return object mapping x and y to corresponding integer values within the width/height of the grid
+	that.parseCoords = function(coord) {
+		var x = mod(parseInt(coord.split(",")[0]), width);
+		var y = mod(parseInt(coord.split(",")[1]), height);
+		return {"x" : x, "y" : y};
+	}
+
 	// modulo function that can deal with negative numbers
 	// @param x integer we want to take the modulo of
 	// @param y the number we're mod-ing by (int)
 	// @return the modded value of x (in range [0, y))
 	var mod = function(x, y) {
-		while (x < 0) {
-			x += y;
-		} 
+		while (x < 0) { x += y; } 
 		return x % y; 
 	};
 
@@ -153,10 +157,3 @@ var Board = function (width, height) {
 	return that;
 }
 
-//@param coord string of format x + "," + y where x and y are integers
-//@return object mapping x and y to corresponding integer values
-parseCoords = function(coord) {
-	var x = parseInt(coord.split(",")[0]);
-	var y = parseInt(coord.split(",")[1]);
-	return {"x" : x, "y" : y};
-}

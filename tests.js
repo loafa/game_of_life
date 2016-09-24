@@ -175,6 +175,57 @@
                 assert.isFalse(board.isAlive(2, 2));
             });
         });
+
+        describe("getLiveCells", function() {
+            it("should get all 3 live cells, be properly initialized by initFromList", function(){
+                var board = Board(3, 3);
+                board.initFromList([[1, 1], [1, 2], [2, 1]]);
+                var list = board.getLiveCells();
+                assert.isTrue($.inArray("1,1", list) >= 0);
+                assert.isTrue($.inArray("1,2", list) >= 0);
+                assert.isTrue($.inArray("2,1", list) >= 0);
+                assert.equal(3, list.length); //and those are the only 3 elements!
+            });
+
+            it("should get updated after setting state", function(){
+                var board = Board(3, 3);
+                board.setState(0, 1, true);
+                var list = board.getLiveCells();
+                assert.isTrue($.inArray("0,1", list) >= 0);
+                assert.equal(1, list.length);
+            });
+
+            it("should be empty after initEmpty", function(){
+                var board = Board(3, 3);
+                var list = board.getLiveCells();
+                assert.equal(0, list.length);
+            });
+
+            it("should be properly updated after updating the board", function(){
+                var board = Board(4, 4);
+                board.initFromList([[1, 0], [1, 2], [2, 1]]);
+                board.updateState();
+                var list = board.getLiveCells();
+                assert.isTrue($.inArray("1,1", list) >= 0); // new live cell
+                assert.isTrue($.inArray("2,1", list) >= 0);
+                assert.equal(2, list.length);
+            });
+        });
+
+        describe("parseCoords", function() {
+            it("should parse the x and y coordinates from the string 21,23", function(){
+                var board = Board();
+                assert.equal(21, board.parseCoords("21,23").x);
+                assert.equal(23, board.parseCoords("21,23").y);
+            });
+
+            // also tests internal mod function
+            it("should parse the x and y coordinates from the string 0,-23 into correct board space", function(){
+                var board = Board(3, 5);
+                assert.equal(1, board.parseCoords("7,-23").x);
+                assert.equal(2, board.parseCoords("0,-23").y);
+            });
+        });
     });
     
     describe("Grid", function() {
