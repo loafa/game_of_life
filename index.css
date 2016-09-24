@@ -7,6 +7,15 @@ body {
     width: 600px; /* width of game grid */
 }
 
+a {
+    text-decoration: none;
+    color: #a093a6;
+}
+
+a:hover {
+    color: #a76b81;
+}
+
 h3 {
 	line-height: 10%;
 }
