@@ -27,7 +27,7 @@ var Board = function (width, height) {
 	that.initEmpty = function() {
 		for (var x = 0; x < width; x++){
 			for (var y = 0; y < height; y++){
-				cells[[x,y]] = Cell(x, y, false); 
+				cells[[x,y]] = Cell(false); 
 			}
 		}
 	};
@@ -50,7 +50,7 @@ var Board = function (width, height) {
 		liveList.forEach(function(coord) {
 			// make sure that the coordinates are wrapped to be within our grid space
 			coord = [coord[0] % width, coord[1] % height];
-			cells[coord] = Cell(coord[0], coord[1], true);
+			cells[coord] = Cell(true);
 		});
 	};
 
@@ -62,11 +62,11 @@ var Board = function (width, height) {
 				var liveNeighbors = that.getLiveNeighbors(x, y);
 
 				if (liveNeighbors == 3) { // at exactly 3, cell either stays alive or is rejuvenated
-					newCellState[[x,y]] = Cell(x, y, true);
+					newCellState[[x,y]] = Cell(true);
 				} else if (liveNeighbors == 2) { // at exactly 2, cell maintains state
-					newCellState[[x,y]] = Cell(x, y, cells[[x,y]].isAlive());
+					newCellState[[x,y]] = Cell(cells[[x,y]].isAlive());
 				} else { // otherwise, perishes from over/underpopulation
-					newCellState[[x,y]] = Cell(x, y, false);
+					newCellState[[x,y]] = Cell(false);
 				}
 			}
 		}

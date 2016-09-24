@@ -6,33 +6,33 @@
 
         describe("isAlive", function() {
             it("should that the cell is alive", function(){
-                var cell = Cell(3, 4, true);
+                var cell = Cell(true);
                 assert.isTrue(cell.isAlive());
             });
             it("should that the cell is dead", function() {
-                var cell = Cell(32, -4, false);
+                var cell = Cell(false);
                 assert.isFalse(cell.isAlive());
             });
         });
         
         describe("setAlive", function() {
             it("should change the cell from dead to alive", function(){
-                var cell = Cell(3, 4, false);
+                var cell = Cell(false);
                 cell.setAlive(true);
                 assert.isTrue(cell.isAlive());
             });
             it("should change the cell from alive to dead", function(){
-                var cell = Cell(3, 4, true);
+                var cell = Cell(true);
                 cell.setAlive(false);
                 assert.isFalse(cell.isAlive());
             });
             it("should not change the state of the live cell", function() {
-                var cell = Cell(32, -4, true);
+                var cell = Cell(true);
                 cell.setAlive(true);
                 assert.isTrue(cell.isAlive());
             });
             it("should not change the state of the dead cell", function() {
-                var cell = Cell(32, -4, false);
+                var cell = Cell(false);
                 cell.setAlive(false);
                 assert.isFalse(cell.isAlive());
             });
