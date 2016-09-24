@@ -3,15 +3,15 @@ var Board = function (width, height) {
 	var cells = {};
 
 	if (width == undefined) {
-		width = 20;
+		width = 30;
 	}
 	if (height == undefined) {
-		height = 20;
+		height = 30;
 	}
-
+	that.print = function () { console.log(Object.keys(cells).filter(function (a) { return cells[a].isAlive(); }));};
 	that.getWidth = function() { return width; };
 	that.getHeight = function() { return height; };
-	that.initializeEmpty = function() {
+	that.initEmpty = function() {
 		// initialize dead board of given size
 		for (var x = 0; x < width; x++){
 			for (var y = 0; y < height; y++){
@@ -28,6 +28,12 @@ var Board = function (width, height) {
 		});
 	};
 
+	that.initFromList = function(liveList) {
+		liveList.forEach(function(coord) {
+			coord = [coord[0] % width, coord[1] % height];
+			cells[coord] = Cell(coord[0], coord[1], true);
+		});
+	};
 	// update the state of Cell at (x, y) based on game rules
 	that.updateState = function() {
 		var newCellState = {};
@@ -60,6 +66,9 @@ var Board = function (width, height) {
 	that.getLiveNeighbors = function(x, y) {
 		var liveCount = 0;
 		var counted = {};
+		// var liveCells = Object.keys(cells).filter(function(cellCoord) {
+		// 	return that.isNeighbor(x, y, cellCoord[0], cellCoord[1]) && cells[cellCoord];
+		// });
 		for (var i = x-1; i < x+2; i++) {
 			for (var j = y-1; j < y+2; j++) {
 				var mod_i = mod(i, width);
@@ -73,7 +82,14 @@ var Board = function (width, height) {
 		return liveCount;
 	};
 
-	that.initializeEmpty(); // always default to empty board
+	// return true iff (i, j) is a neighbor of (x, y)
+	that.isNeighbor = function (x, y, i, j) { 
+		i = mod(i, width);
+		j = mod(j, height);
+		return i >= x-1 && i <= x+1 && j >= y-1 && j <= y+1 && !(i == x || j == y);
+	};
+
+	that.initEmpty(); // always default to empty board
 	Object.freeze(that);
 	return that;
 }

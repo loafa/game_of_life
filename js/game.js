@@ -11,18 +11,26 @@ var Game = function(grid, board) {
 	}
 
 	that.randomInit = function() {
+		board.initEmpty();
 		board.initRandom(.25);
 		that.populateBoard();
 	}
 
+	that.listInit = function(list) {
+		board.initEmpty();
+		board.initFromList(list);
+		that.populateBoard();
+	}
+
 	that.emptyInit = function() {
-		board.initializeEmpty();
+		board.initEmpty();
 		that.populateBoard();
 	}
 
 	that.update = function() {
 		board.updateState();
         that.populateBoard();
+        board.print();
 	};
 
 	that.start = function() {
@@ -41,7 +49,7 @@ var Game = function(grid, board) {
 		}
 	}
 
-	that.reset = function(startState) {
+	that.reset = function() {
 		board.init(startState ? startState : []);
 	};
 	

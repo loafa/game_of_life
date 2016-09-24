@@ -1,12 +1,13 @@
+// creates a grid for gameplay
+// square_dim: dimension of each cell square (in pixels)
+// squares_per_row: number of squares in each row/ column
+// canvas: the HTML5 canvas object to create the grid in
+//			(if not passed an object, will attach a canvas element named 'grid' to the doc)
 var Grid = function(square_dim, squares_per_row, canvas) {
 	var that = Object.create(Grid.prototype);
 
-	if (square_dim == undefined) {
-		square_dim = 20;
-	}
-	if (squares_per_row == undefined) {
-		squares_per_row = 20;
-	}
+	if (square_dim == undefined) { square_dim = 20; }
+	if (squares_per_row == undefined) { squares_per_row = 30; }
 	if (canvas == undefined) {
 		if (document.getElementById("grid") == undefined){
 			$('<canvas>').attr({ id: "grid" }).appendTo('body');
