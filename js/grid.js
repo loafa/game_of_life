@@ -7,7 +7,7 @@ var Grid = function(square_dim, board_dim, canvas) {
 	var that = Object.create(Grid.prototype);
 	var DEFAULT_SQUARE_DIM = 20;
 	var DEFAULT_BOARD_DIM = 30;
-	
+
 	// defaults. if not specified, we say that:
 	// a square will be 20 x 20px
 	// there will be 30 squares in every row and column

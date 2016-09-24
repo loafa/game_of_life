@@ -52,17 +52,17 @@ var UI = function(game) {
 	// stop the game
 	that.stop = function() {
 		game.stop();
-		$("#toggle").text("Start");
+		$("#start-stop").text("Start");
 	}
 
 	// start the game
 	that.start = function() {
 		game.start();
-		$("#toggle").text("Stop");
+		$("#start-stop").text("Stop");
 	}
 
 
-	$("#toggle").click(that.toggleGameState);
+	$("#start-stop").click(that.toggleGameState);
 	$("#random").click(that.randomInit);
 	$("#empty").click(that.emptyInit);
 	$("#grid").click(function(evt) {

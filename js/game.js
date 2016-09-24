@@ -46,7 +46,8 @@ var Game = function(grid, board) {
 	that.start = function() {
 		that.populateBoard();
 		if (!running) {
-			interval = window.setInterval(that.update, 100);
+			var animation_interval = 120; //ms
+			interval = window.setInterval(that.update, animation_interval);
 			running = true;
 		}
 	};
