@@ -7,6 +7,10 @@ body {
     width: 600px; /* width of game grid */
 }
 
+h3 {
+	line-height: 10%;
+}
+
 button {
     background-color: #a093a6;
     border: 1px solid;
