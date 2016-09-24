@@ -1,18 +1,27 @@
+// represents the game board (this is the logic side, ie. the model)
+// our board is "infinite" in that coordinates wrap around
+// when talking about "board coords" we refer to the number of squares from the top left (zero-indexed)
+//		this is as opposed to pixel coordinates, for example
 var Board = function (width, height) {
 	var that = Object.create(Board.prototype);
+
+	// maps [x, y] (location in square coordinates) to a Cell at that location
 	var cells = {};
 
-	if (width == undefined) {
+	// default to a 30 x 30 board
+	if (width === undefined) {
 		width = 30;
 	}
-	if (height == undefined) {
+	if (height === undefined) {
 		height = 30;
 	}
-	that.print = function () { console.log(Object.keys(cells).filter(function (a) { return cells[a].isAlive(); }));};
+
+	// getters for the width and height of the game board (board coords)
 	that.getWidth = function() { return width; };
 	that.getHeight = function() { return height; };
+
+	// initialize dead board of size width x height
 	that.initEmpty = function() {
-		// initialize dead board of given size
 		for (var x = 0; x < width; x++){
 			for (var y = 0; y < height; y++){
 				cells[[x,y]] = Cell(x, y, false); 
@@ -20,7 +29,10 @@ var Board = function (width, height) {
 		}
 	};
 	
+	// initialize a board of size width x height with randomly placed live cells
+	// prob: the probability of a cell being live
 	that.initRandom = function(prob) {
+		// default probability of being a live cell is 25%
 		if (prob == undefined) { prob = .25; };
 
 		Object.keys(cells).forEach(function(cell) {
@@ -28,23 +40,29 @@ var Board = function (width, height) {
 		});
 	};
 
+	// initialize a board of size width x height from a list containing the coords
+	//		of live cells (eg. [[0, 1], [3, 4]] has live cells at only (0, 1) and (3, 4) in board coords)
+	// livelist: the list of coords (described above)
 	that.initFromList = function(liveList) {
 		liveList.forEach(function(coord) {
+			// make sure that the coordinates are wrapped to be within our grid space
 			coord = [coord[0] % width, coord[1] % height];
 			cells[coord] = Cell(coord[0], coord[1], true);
 		});
 	};
+
 	// update the state of Cell at (x, y) based on game rules
 	that.updateState = function() {
 		var newCellState = {};
 		for (var x = 0; x < width; x++){
 			for (var y = 0; y < height; y++){
 				var liveNeighbors = that.getLiveNeighbors(x, y);
-				if (liveNeighbors == 3) {
+
+				if (liveNeighbors == 3) { // at exactly 3, cell either stays alive or is rejuvenated
 					newCellState[[x,y]] = Cell(x, y, true);
-				} else if (liveNeighbors == 2) {
+				} else if (liveNeighbors == 2) { // at exactly 2, cell maintains state
 					newCellState[[x,y]] = Cell(x, y, cells[[x,y]].isAlive());
-				} else {
+				} else { // otherwise, perishes from over/underpopulation
 					newCellState[[x,y]] = Cell(x, y, false);
 				}
 			}
@@ -57,12 +75,13 @@ var Board = function (width, height) {
 		cells[[x,y]].setAlive(isAlive);
 	};
 
-	that.cells = function () { return cells; };
-
-	that.getState = function(x, y) {
+	// returns true iff the Cell at (x, y) is alive
+	that.isAlive = function(x, y) {
 		return cells[[x,y]].isAlive();
 	};
 
+	// returns the number of neighbors of the Cell at (x, y) that are alive
+	// (non-inclusive of the cell at (x, y))
 	that.getLiveNeighbors = function(x, y) {
 		var liveCount = 0;
 		var counted = {};
@@ -83,17 +102,18 @@ var Board = function (width, height) {
 	};
 
 	// return true iff (i, j) is a neighbor of (x, y)
-	that.isNeighbor = function (x, y, i, j) { 
-		i = mod(i, width);
-		j = mod(j, height);
-		return i >= x-1 && i <= x+1 && j >= y-1 && j <= y+1 && !(i == x || j == y);
-	};
+	// that.isNeighbor = function (x, y, i, j) { 
+	// 	i = mod(i, width);
+	// 	j = mod(j, height);
+	// 	return i >= x-1 && i <= x+1 && j >= y-1 && j <= y+1 && !(i == x || j == y);
+	// };
 
 	that.initEmpty(); // always default to empty board
 	Object.freeze(that);
 	return that;
 }
 
+// modulo function that can deal with negative numbers
 mod = function(x, y) {
 	while (x < 0) {
 		x += y;
