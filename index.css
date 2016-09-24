@@ -15,7 +15,7 @@ button {
     text-align: center;
     font-size: 16px;
     float:left;
-    margin: auto;
+    margin: 2px;
 }
 
 button:hover {
