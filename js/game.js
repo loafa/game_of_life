@@ -30,13 +30,13 @@ var Game = function(grid, board) {
 	that.update = function() {
 		board.updateState();
         that.populateBoard();
-        board.print();
+        // board.print();
 	};
 
 	that.start = function() {
 		that.populateBoard();
 		if (!running) {
-			interval = window.setInterval(that.update, 1000);
+			interval = window.setInterval(that.update, 100);
 			running = true;
 		}
 	}

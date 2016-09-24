@@ -1,3 +1,35 @@
-.grid {
-	
+body {
+	font-family: 'Montserrat', sans-serif;
+	margin-left: auto;
+    margin-right: auto;
+    display: block;
+    color: #4a535f;
+    width: 600px; /* width of game grid */
+}
+
+button {
+    background-color: #a093a6;
+    border: 1px solid;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    font-size: 16px;
+    float:left;
+    margin: auto;
+}
+
+button:hover {
+	background-color: #67687e;
+}
+
+.start-stop {
+	float: right;
+}
+
+.clear-button {
+	background-color: #a76b81;
+}
+
+.clear-button:hover {
+	background-color: #4a535f;
 }

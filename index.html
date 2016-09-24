@@ -2,18 +2,28 @@
 <html>
 <head>
     <title>6.170 Assignment 2: Game of Life</title>
+    <link rel="stylesheet" href="./index.css" type="text/css" charset="utf-8">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
 </head>
 
 <body>
-    <canvas id="grid" class="grid"></canvas>
-    <button id="toggle" type="button">Start</button>
+
+<!-- <div class="grid"> -->
+<h1>Game of Life</h1>
+<h3>Click on squares to toggle alive/ dead and press start to run!</h3>
+    <canvas id="grid"></canvas>
+<!-- </div> -->
+<!-- <div class="button-div"> -->
     <button id="random" type="button">Random</button>
     <button id="pulsar" type="button">Pulsar</button>
     <button id="pentadecathlon" type="button">Pentadecathlon</button>
-    <button id="empty" type="button">Clear</button>
 
+    <div class="start-stop">
+    <button id="toggle" type="button">Start</button>
+    <button id="empty" type="button" class="clear-button">Clear</button>
+    </div>
+<!-- </div> -->
     <script src="js/cell.js"></script>
     <script src="js/board.js"></script>
     <script src="js/grid.js"></script>
