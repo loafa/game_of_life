@@ -1,7 +1,34 @@
 (function() {
     mocha.setup("bdd");
     var assert = chai.assert;
+    describe("Util", function() {
+        describe("mod", function() {
+            // x mod larger y is x
+            it("should show that 3 % 25 is 3", function() {
+                assert.equal(3, mod(3, 25));
+            });
 
+            // x mod smaller y is x % y, x not divisible by y
+            it("should show that 25 % 3 is 1", function() {
+                assert.equal(1, mod(25, 3));
+            });
+
+            // x mod smaller y is x % y, x divisible by y
+            it("should show that 24 % 2 is 0", function() {
+                assert.equal(0, mod(24, 2));
+            });
+
+            // test mod negative x
+            it("should show that -25 % 7 is 3", function() {
+                assert.equal(3, mod(-25, 7));
+            });
+
+            // test mod negative x, evenly divisible
+            it("should show that -21 % 7 is 0", function() {
+                assert.equal(0, mod(-21, 7));
+            });
+        });
+    });
     describe("Cell", function() {
 
         describe("isAlive", function() {

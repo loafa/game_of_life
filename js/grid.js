@@ -58,7 +58,7 @@ var Grid = function(square_dim, board_dim, canvas) {
 
 	// clears the grid
 	that.resetGrid = function() {
-		ctx.clearRect(0, 0, pixel_dim, pixel_dim);
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		that.drawGridLines();
 	};
 
