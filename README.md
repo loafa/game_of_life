@@ -1,9 +1,12 @@
 #Assignment 2: Game of Life
 Based on [John Conway's Game of Life](http://en.wikipedia.org/wiki/Conway's_Game_of_Life). The game is currently deployed on [Athena](http://www.web.mit.edu/ssrusso/www/game_of_life/index.html).
 ## 1. Concerns
-For this project, I identified two main concerns: the game logic and the graphics. In keeping with the MVC architectural pattern discussed in lecture, I decided to deal with the two separately, and have a module that could interface between the two. As such, the game logic is completely separate from the UI (details to be discussed in Program Modules).
-
-I decided to treat the game board and grid as its own module inside of the larger UI, as the primary concerns of the Grid and Board only exist within the grid space (rather than looking at buttons, etc.) As such, the `UI` object is at a higher level, instructing changes.
+For this project, I identified the following concerns:
+- Game logic
+- Graphics
+- UI
+ 
+And, of course, interfacing between all of them. `Board` and `Cell` manage game logic, with `Board` doing most of the heavy lifting, determining interactions between cells, etc. The graphics are handled in `Grid`, which is displays a square grid of filled and unfilled squares. `UI` handles all user interactions via mouse clicks and button presses. `Game` is the controller that interfaces between game logic, graphics, and the user, as well as updating the animation when appropriate.
 
 ## 2. Program Modules
 The code is split up into several distinct modules, each with its own individual .js file. The `Board` and `Cell` objects are responsible for game logic, and have no graphic component (ie. the Model). The `Grid` is the construction used to display the game board, and is entirely separate from the game (we use an HTML5 canvas object to draw the grid and display all graphics). The `Game` object interfaces between the game logic and the graphical representation of the game. The `UI` sits on top of everything, and manages user generated events (button press, mouse click, etc.), informing the game to update appropriately. 
