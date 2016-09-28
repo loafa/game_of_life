@@ -161,6 +161,25 @@
             });
         });
 
+        describe("initFromList", function() {
+            // as the board distribution will be random, we can only check that
+            // all cells have been populated (none are undefined)
+            it("should wrap coordinates into appropriate board space", function(){
+                var board = Board(3, 3);
+                board.initFromList([[4, 4]]);
+                assert.isTrue(board.isAlive(1, 1));
+            });
+
+            it("correctly init from list", function(){
+                var board = Board(3, 3);
+                var list = [[1, 0], [2, 0], [1, 1], [2, 1], [2, 2]];
+                board.initFromList(list);
+                for (var i = 0; i < list.length; i++){
+                    assert.isTrue(board.isAlive(list[i][0], list[i][1]));
+                }
+            });
+        });
+
         describe("updateState", function() {
             it("should update the state of the cell according to underpopulation rule", function(){
                 var board = Board(3, 3);
